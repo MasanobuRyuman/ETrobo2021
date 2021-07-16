@@ -1,4 +1,4 @@
-#include "Tracer.h" // <1>
+#include "Tracer.h" 
 
 Tracer::Tracer():
   leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { // <2>
@@ -10,7 +10,7 @@ void Tracer::init() {
 
 void Tracer::terminate() {
   msg_f("Stopped.", 1);
-  leftWheel.stop();  // <1>
+  leftWheel.stop();  
   rightWheel.stop();
 }
 
@@ -26,8 +26,23 @@ float Tracer::calc_porp_value(){
 void Tracer::run() {
   msg_f("running...", 1);
   float turn = calc_porp_value();
-  int pwm_l = pwm - turn;
-  int pwm_r = pwm + turn;
-  leftWheel.setPWM(pwm_l);
-  rightWheel.setPWM(pwm_r);
+  int pwm_l = pwm + turn;
+  int pwm_r = pwm - turn;
+  if (tracerStatus == 0){
+    leftWheel.setPWM(10);
+    rightWheel.setPWM(10);
+  }else if (tracerStatus == 1){
+    leftWheel.setPWM(pwm_l);
+    rightWheel.setPWM(pwm_r);
+  }else if (tracerStatus == 2){
+    leftWheel.setPWM(pwm_l);
+    rightWheel.setPWM(pwm_r);
+  }else if (tracerStatus == 3){
+    leftWheel.setPWM(pwm_l);
+    rightWheel.setPWM(pwm_r);
+  }
+ 
+  
 }
+
+

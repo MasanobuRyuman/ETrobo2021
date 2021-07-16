@@ -10,6 +10,8 @@ public:
   void run();       // <2>
   void init();
   void terminate();
+  void leftTracer();
+  void rightTracer();
 
 private:
   Motor leftWheel;
@@ -19,4 +21,5 @@ private:
   const int8_t pwm = (Motor::PWM_MAX) / 6;
 
   float calc_porp_value();
+  int tracerStatus=0;
 };
