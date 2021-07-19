@@ -1,4 +1,6 @@
 #include "Tracer.h" 
+#include <Motor.h> 
+using namespace ev3api;  
 
 Tracer::Tracer():
   leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { // <2>
@@ -23,14 +25,26 @@ float Tracer::calc_porp_value(){
   return (Kp * diff + bias);
 }
 
+void Tracer::direction(){
+  Motor motorA = Motor(PORT_A, true, LARGE_MOTOR);
+  Motor motorB = Motor(PORT_B, true, LARGE_MOTOR);
+  int32_t left_counts = motorA.getCount();
+  int32_t right_counts = motorB.getCount();
+  body_direction = 2 / (left_counts - right_counts) * 3.14;
+}
+
+
 void Tracer::run() {
   msg_f("running...", 1);
   float turn = calc_porp_value();
   int pwm_l = pwm + turn;
   int pwm_r = pwm - turn;
   if (tracerStatus == 0){
-    leftWheel.setPWM(10);
-    rightWheel.setPWM(10);
+    float turn = calc_porp_value();
+    int pwm_l = straightMaxPwm - turn;
+    int pwm_r = straightMaxPwm + turn;
+    leftWheel.setPWM(pwm_l);
+    rightWheel.setPWM(pwm_r);
   }else if (tracerStatus == 1){
     leftWheel.setPWM(pwm_l);
     rightWheel.setPWM(pwm_r);

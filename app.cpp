@@ -13,7 +13,7 @@ void tracer_task(intptr_t exinf) {
 
 void main_task(intptr_t unused) { 
   const uint32_t duration = 100; 
-
+  
   tracer.init(); 
   sta_cyc(TRACER_CYC); 
   

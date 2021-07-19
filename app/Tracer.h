@@ -1,13 +1,13 @@
-#include "Motor.h"       // <1>
-#include "ColorSensor.h" // <2>
-#include "util.h"        // <3>
+#include "Motor.h"       
+#include "ColorSensor.h" 
+#include "util.h"        
 
-using namespace ev3api;  // <4>
+using namespace ev3api;  
 
-class Tracer {  // <1>
+class Tracer {  
 public:
   Tracer();
-  void run();       // <2>
+  void run();       
   void init();
   void terminate();
   void leftTracer();
@@ -16,10 +16,16 @@ public:
 private:
   Motor leftWheel;
   Motor rightWheel;
-  ColorSensor colorSensor; // <3>
-  const int8_t mThreshold = 28;  // <4>
+  ColorSensor colorSensor; 
+  const int8_t mThreshold = 28;  
+  //最高速度
+  const int8_t maxPwm = (Motor::PWM_MAX) / 1;
+  //直線の最高速度
+  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1.5;
   const int8_t pwm = (Motor::PWM_MAX) / 6;
-
+  int tracerStatus = 0;
+  float body_direction;
   float calc_porp_value();
-  int tracerStatus=0;
+  void direction();
+  
 };
