@@ -21,11 +21,14 @@ private:
   //最高速度
   const int8_t maxPwm = (Motor::PWM_MAX) / 1;
   //直線の最高速度
-  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1.5;
+  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1;
   const int8_t pwm = (Motor::PWM_MAX) / 6;
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
   void direction();
+  int32_t left_counts;
+  int32_t right_counts;
+
   
 };
