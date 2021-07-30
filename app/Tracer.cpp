@@ -36,7 +36,7 @@ void Tracer::direction(){
 //ホイールの回転数から距離を計算
 float motor_count_to_dist(int c)
 {
-  return ( c * 0.187f);//仮
+  return ( c * (0.381f * 0.94f));//仮
 }
 
 float get_direction_change(int rm,int lm)
@@ -54,7 +54,7 @@ void Tracer::run() {
   float turn = calc_porp_value();
   int pwm_l = pwm + turn;
   int pwm_r = pwm - turn;
-  if (right_counts >= 1500){
+  if (right_counts >= 2155){
       syslog(7,"きた");
       terminate();
   }else if (tracerStatus == 0){
