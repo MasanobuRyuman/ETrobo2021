@@ -1,6 +1,7 @@
 #include "Tracer.h" 
 #include <Motor.h> 
-using namespace ev3api;  
+using namespace ev3api;
+#include <math.h>
 
 Tracer::Tracer():
   leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { // <2>
@@ -48,20 +49,45 @@ float get_direction_change(int rm,int lm)
   return distance / 100;//仮 タイヤの間の距離mm
 }
 
+
+//座標を求める
+void Tracer::get_coordinates(int32_t now_left_counts, int32_t now_right_counts)
+{
+  int32_t l_count = now_left_counts-before_left_counts;
+  int32_t r_count = now_right_counts-before_right_counts;
+  float new_angle = now_angle+get_direction_change(l_count,r_count);
+  float length = (motor_count_to_dist(l_count)+motor_count_to_dist(r_count))/2;  
+  float ave_angle = (new_angle+now_angle)/2;
+  x_coordinates = x_coordinates+length*cosf(ave_angle);//
+  y_coordinates = y_coordinates+length*sinf(ave_angle);//
+  before_left_counts = now_left_counts;
+  before_right_counts = now_right_counts;
+  now_angle=new_angle;
+
+}
+
+
+
 void Tracer::run() {
   direction();
   msg_f("running...", 1);
+  get_coordinates(left_counts,right_counts);
+  char s[256];
+  sprintf(s, "%lf %lf", x_coordinates, y_coordinates);
+  //syslog(7, s);
+  msg_f("running...", 1);
+
   float turn = calc_porp_value();
   int pwm_l = pwm + turn;
   int pwm_r = pwm - turn;
-  if (right_counts >= 1500){
+  /*if (right_counts >= 1500){
       syslog(7,"きた");
       terminate();
   }else if (tracerStatus == 0){
     leftWheel.setPWM(pwm);
     rightWheel.setPWM(pwm);
     
-  }
+  }*/
   if (tracerStatus == 9){
     float turn = calc_porp_value();
     int pwm_l = straightMaxPwm - turn;
@@ -90,8 +116,9 @@ void Tracer::run() {
     leftWheel.setPWM(pwm_l);
     rightWheel.setPWM(pwm_r);
   }
- 
-  
+
+
+
 }
 
 

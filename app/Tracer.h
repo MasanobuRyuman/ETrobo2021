@@ -29,6 +29,11 @@ private:
   void direction();
   int32_t left_counts;
   int32_t right_counts;
-
+  float x_coordinates=0; //x座標
+  float y_coordinates=0; //y座標
+  int32_t before_left_counts=0;
+  int32_t before_right_counts=0;
+  float now_angle;
+  void get_coordinates(int32_t now_left_counts, int32_t now_right_counts);
   
 };
