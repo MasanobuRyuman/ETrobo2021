@@ -9,7 +9,7 @@ Tracer::Tracer():
 void Tracer::init() {
   init_f("Tracer");
 }
-
+//書き換えた。
 void Tracer::terminate() {
   msg_f("Stopped.", 1);
   leftWheel.stop();  
