@@ -9,7 +9,7 @@ Tracer::Tracer():
 void Tracer::init() {
   init_f("Tracer");
 }
-//書き換えた。
+
 void Tracer::terminate() {
   msg_f("Stopped.", 1);
   leftWheel.stop();  
@@ -46,6 +46,20 @@ float get_direction_change(int rm,int lm)
   float distance = motor_count_to_dist(motor_difference);
   //タイヤの間の距離が半径
   return distance / 100;//仮 タイヤの間の距離mm
+}
+
+//PIDの内Iの部分の計算を呼び出す関数
+float IntegralControl(){
+  int i;
+  int LIGHT_LOG_SIZE=20;
+  int light_log[LIGHT_LOG_SIZE], light_log_index, light_integra;
+  int i_val,Ki;
+  Ki = 1.0;
+  light_integra = 0;
+	for(i=0;i<LIGHT_LOG_SIZE;i++){
+		light_integra += light_log[i];
+	}
+	i_val = Ki * light_integra / LIGHT_LOG_SIZE;
 }
 
 void Tracer::run() {
