@@ -23,6 +23,20 @@ float Tracer::calc_porp_value(){
   return (Kp * diff + bias);
 }
 
+//I制御の簡単な実装。
+float IntegralControl(){
+  int i;
+  int LIGHT_LOG_SIZE = 20;
+  int light_log[LIGHT_LOG_SIZE], light_log_index, light_integra;
+  int i_val,Ki;
+
+  light_integra = 0;
+	for(i=0;i<LIGHT_LOG_SIZE;i++){
+		light_integra += light_log[i];
+	}
+	i_val = Ki * light_integra / LIGHT_LOG_SIZE;	
+}
+
 float Tracer::derivative_control(){
   int diff = colorSensor.getBrightness() - target;
   return (kd * (diff - prev_diff));
