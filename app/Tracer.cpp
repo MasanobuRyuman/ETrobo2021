@@ -17,10 +17,9 @@ void Tracer::terminate() {
 }
 
 float Tracer::calc_porp_value(){
-  const float Kp = 0.83;
   const int bias = 0;
   int diff = colorSensor.getBrightness() - target;
-  return (Kp * diff + bias);
+  return (maxkp * diff + bias);
 }
 
 //I制御の簡単な実装。
@@ -68,9 +67,9 @@ float get_direction_change(int rm,int lm)
 void Tracer::run() {
   direction();
   msg_f("running...", 1);
-  float turn = calc_porp_value();
-  int pwm_l = pwm + turn;
-  int pwm_r = pwm - turn;
+  float turn = calc_porp_value()+derivative_control() + IntegralControl();
+  int pwm_l = pwm - turn;
+  int pwm_r = pwm + turn;
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
 }
