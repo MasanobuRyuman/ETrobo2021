@@ -9,7 +9,7 @@ Tracer::Tracer():
 void Tracer::init() {
   init_f("Tracer");
 }
-//書き換えた。
+
 void Tracer::terminate() {
   msg_f("Stopped.", 1);
   leftWheel.stop();  
@@ -20,20 +20,6 @@ float Tracer::calc_porp_value(){
   const int bias = 0;
   int diff = colorSensor.getBrightness() - target;
   return (maxkp * diff + bias);
-}
-
-//I制御の簡単な実装。
-float IntegralControl(){
-  int i;
-  int LIGHT_LOG_SIZE = 20;
-  int light_log[LIGHT_LOG_SIZE], light_log_index, light_integra;
-  int i_val,Ki;
-
-  light_integra = 0;
-	for(i=0;i<LIGHT_LOG_SIZE;i++){
-		light_integra += light_log[i];
-	}
-	i_val = Ki * light_integra / LIGHT_LOG_SIZE;	
 }
 
 float Tracer::derivative_control(){
@@ -62,6 +48,25 @@ float get_direction_change(int rm,int lm)
   //タイヤの間の距離が半径
   //角度を返す（ラジアン)
   return distance / 100;//仮 タイヤの間の距離mm
+}
+
+//I制御の簡単な実装。
+float Tracer::IntegralControl(){
+  int LIGHT_LOG_SIZE = 20;
+  int light_log[20];
+  int light_integra;
+
+  int diff = colorSensor.getBrightness() - target;
+  light_log[light_log_index] = diff;
+	light_log_index = (light_log_index+1) % LIGHT_LOG_SIZE;
+  light_integra = 0;
+	for(int i=0;i<LIGHT_LOG_SIZE;i++){
+		light_integra += light_log[i];
+    char s[256];
+    sprintf(s, "%d", light_log[i]);
+    syslog(7, s);
+	}
+  return (ki * (light_integra / LIGHT_LOG_SIZE));
 }
 
 void Tracer::run() {

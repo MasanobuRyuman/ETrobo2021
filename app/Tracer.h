@@ -26,6 +26,7 @@ private:
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
+  float IntegralControl();
   float derivative_control();
   void direction();
   int32_t left_counts;
@@ -36,4 +37,6 @@ private:
   //pwmの値がmax / 1　の時
   const float maxkp = 1.0;
   const float kd = 1.0;
+  const float ki = 0.8 ;
+  int light_log_index = 0;
 };
