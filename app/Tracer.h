@@ -26,11 +26,14 @@ private:
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
+  float IntegralControl();
   float derivative_control();
   void direction();
   int32_t left_counts;
   int32_t right_counts;
-  const int target = 10;
-  static float prev_diff = 0.0f;
+  const int target = 20;
+  float prev_diff = 0.0f;
   const float kd = 10.0;
+  const float ki = 0.8 ;
+  int light_log_index = 0;
 };
