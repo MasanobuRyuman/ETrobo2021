@@ -26,9 +26,11 @@ private:
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
+  float IntegralControl();
   void direction();
   int32_t left_counts;
   int32_t right_counts;
+  const float ki = 0.8 ;
 
   
 };

@@ -48,18 +48,21 @@ float get_direction_change(int rm,int lm)
   return distance / 100;//仮 タイヤの間の距離mm
 }
 
-//PIDの内Iの部分の計算を呼び出す関数
-float IntegralControl(){
+//I制御の簡単な実装。
+float Tracer::IntegralControl(){
   int i;
-  int LIGHT_LOG_SIZE=20;
-  int light_log[LIGHT_LOG_SIZE], light_log_index, light_integra;
-  int i_val,Ki;
-  Ki = 1.0;
+  int LIGHT_LOG_SIZE = 20;
+  int light_log[LIGHT_LOG_SIZE],light_log_index = 0,light_integra;
+  const int target = 10;
+  
+  float diff = colorSensor.getBrightness() - target;
+  light_log[light_log_index] = diff;
+	light_log_index = (light_log_index+1) % LIGHT_LOG_SIZE;
   light_integra = 0;
 	for(i=0;i<LIGHT_LOG_SIZE;i++){
 		light_integra += light_log[i];
-	}
-	i_val = Ki * light_integra / LIGHT_LOG_SIZE;
+	}	
+  return (ki * light_integra / LIGHT_LOG_SIZE);
 }
 
 void Tracer::run() {
