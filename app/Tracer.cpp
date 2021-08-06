@@ -62,21 +62,59 @@ float Tracer::IntegralControl(){
   light_integra = 0;
 	for(int i=0;i<LIGHT_LOG_SIZE;i++){
 		light_integra += light_log[i];
-    char s[256];
-    sprintf(s, "%d", light_log[i]);
-    syslog(7, s);
+    //char s[256];
+    //sprintf(s, "%d", light_log[i]);
+    //syslog(7, s);
 	}
   return (ki * (light_integra / LIGHT_LOG_SIZE));
 }
 
+void Tracer::color_sensor(){
+  colorSensor.getRawColor(rgb);
+}
+
 void Tracer::run() {
   direction();
+  color_sensor();
+  /*
+  char r[256];
+  sprintf(r,"%d",rgb.r);
+  syslog(7,"r");
+  syslog(7,r);
+  char g[256];
+  sprintf(g,"%d",rgb.g);
+  syslog(7,"g");
+  syslog(7,g);
+  char s[256];
+  sprintf(s,"%d",rgb.b);
+  syslog(7,"b");
+  syslog(7,s);
+  */
   msg_f("running...", 1);
+  double b_r_difference = (double)rgb.b / (rgb.r + 1);
+  double b_g_dirrerence = (double)rgb.b / (rgb.g + 1);
+  /*
+  char r_dif[256];
+  sprintf(r_dif,"%lf",b_r_difference);
+  syslog(7,"r_dif");
+  syslog(7,r_dif);
+  char g_dif[256];
+  sprintf(g_dif,"%lf",b_g_dirrerence);
+  syslog(7,"g_dif");
+  syslog(7,g_dif);
+  */
+  if ((b_r_difference > 1.5) & (b_g_dirrerence > 1.5)){
+    syslog(7,"青色に入った");
+  }
+  char brightness[256];
+  sprintf(brightness,"%d",colorSensor.getBrightness());
+  syslog(7,brightness);
   float turn = calc_porp_value()+derivative_control() + IntegralControl();
-  int pwm_l = pwm - turn;
+  int pwm_l = pwm + turn;
   int pwm_r = pwm + turn;
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
+  
 }
 
 
