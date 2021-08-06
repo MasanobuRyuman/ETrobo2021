@@ -19,10 +19,10 @@ private:
   ColorSensor colorSensor; 
   const int8_t mThreshold = 28;  
   //最高速度
-  const int8_t maxPwm = (Motor::PWM_MAX) / 1;
+  const int8_t maxPwm = (Motor::PWM_MAX) / 3;
   //直線の最高速度
-  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1;
-  const int8_t pwm = (Motor::PWM_MAX) / 2;
+  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 3;
+  int8_t pwm = (Motor::PWM_MAX) / 3;
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
@@ -31,7 +31,7 @@ private:
   int32_t left_counts;
   int32_t right_counts;
 
-  float x_coordinates=0; //x座標
+  float x_coordinates=-17; //x座標
   float y_coordinates=0; //y座標
   int32_t before_left_counts=0;
   int32_t before_right_counts=0;
@@ -39,6 +39,9 @@ private:
   void get_coordinates(int32_t now_left_counts, int32_t now_right_counts);
 
   const int target = 10;
-  static float prev_diff = 0.0f;
-  const float kd = 10.0;
+  int prev_diff = 0;
+  const float kd = 10.0f;
+  char s[256];
+
+  int area=1;
 };
