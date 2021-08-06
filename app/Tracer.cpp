@@ -110,7 +110,7 @@ void Tracer::run() {
   sprintf(brightness,"%d",colorSensor.getBrightness());
   syslog(7,brightness);
   float turn = calc_porp_value()+derivative_control() + IntegralControl();
-  int pwm_l = pwm + turn;
+  int pwm_l = pwm - turn;
   int pwm_r = pwm + turn;
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
