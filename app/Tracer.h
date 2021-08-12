@@ -26,7 +26,8 @@ private:
   const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1;
   const int8_t pwm = (Motor::PWM_MAX) / 2;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
-  const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 5;
+  const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
+
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
@@ -68,4 +69,5 @@ private:
   bool fast_green = true;
   bool yellow_district_after = false;
   bool fast_yellow_district_after = true;
+  bool red_flag = false;
 };
