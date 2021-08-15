@@ -22,12 +22,15 @@ float Tracer::calc_porp_value(){
   const int bias = 0;
   int diff;
   if (line_status_blue == true){
+    syslog(7,"blueline");
     diff = colorSensor.getBrightness() - blue_target;
     return (kp * diff + bias);
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
+    syslog(7,"greenline");
     diff = colorSensor.getBrightness() - green_target;
     return (green_kp * diff + bias);
   }else{
+    syslog(7,"通常のpid制御");
     diff = colorSensor.getBrightness() - target;
     return (kp * diff + bias);
   }
@@ -149,17 +152,23 @@ void Tracer::swing_neck(){
 void Tracer::run() {
   direction();
   color_sensor();
-  //明るさ測定
+  
+  //真っ直ぐ走らせる
   /*
   float turn = calc_porp_value()+derivative_control() + IntegralControl();
   int pwm_l = pwm + turn;
   int pwm_r = pwm + turn;
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
+  */
+
+  //明るさ測定
+  /*
   char b[256];
   sprintf(b,"%d",colorSensor.getBrightness());
   syslog(7,b);
   */
+  
 
   //rgbの測定
   /*
@@ -224,11 +233,11 @@ void Tracer::run() {
   //黄色に入った
   } else if ((r_b_difference > 0.8) & (g_b_difference > 0.8)){
     syslog(7,"黄色に入った");
-    if (yellow_in_flag == false){
+    if (line_status_yellow == false){
       syslog(7,"きた");
-      yellow_count += 1;
+      yellow_count += 1;//新しく黄色い線に入ったらカウントを増やす
     }
-    yellow_in_flag = true;
+    line_status_yellow = true;
     
     float turn = calc_porp_value()+derivative_control() + IntegralControl();
     int pwm_l = pwm + turn;
@@ -240,23 +249,32 @@ void Tracer::run() {
     syslog(7,"緑に入った");
     line_status_green = true;
     //yellow_district_after = false;
+    /*
     if (fast_green == true){
       clock.reset();
       fast_green = false;
     }
+    */
     //最初は機体を傾ける
-    if (clock.now() < 100000){
-      leftWheel.setPWM(30);
+    /*if (clock.now() < 100000){
+      leftWheel.setPWM(40);
       rightWheel.setPWM(0);
     }else{
+      syslog(7,"傾きが終わった");
       float turn = calc_porp_value() + derivative_control() + IntegralControl();
       int pwm_l = green_pwm - turn;
       int pwm_r = green_pwm + turn;
       leftWheel.setPWM(pwm_l);
       rightWheel.setPWM(pwm_r);
     }
+    */
+    float turn = calc_porp_value() + derivative_control() + IntegralControl();
+    int pwm_l = green_pwm - turn;
+    int pwm_r = green_pwm + turn;
+    leftWheel.setPWM(pwm_l);
+    rightWheel.setPWM(pwm_r);
   //赤色に入った
-  } else if ((r_g_difference > 1.5) & (r_b_difference > 1.5)){
+  } else if ((r_g_difference > 1.2) & (r_b_difference > 1.2)){
     syslog(7,"赤色");
     red_flag = true;
     float turn = calc_porp_value() + derivative_control() + IntegralControl();
@@ -271,11 +289,13 @@ void Tracer::run() {
     int pwm_r = pwm + turn;
     leftWheel.setPWM(pwm_l);
     rightWheel.setPWM(pwm_r);
-    if (clock.now() > 1000000){
+    if (clock.now() > 1400000){
       terminate();
     } 
   } else {
-    yellow_in_flag = false;
+    line_status_yellow = false;//黄色い線に入っていない
+    line_status_blue = false;//青の線に入っていない
+    line_status_green = false;//緑のせんに入っていない
     if ((yellow_count >= 2) & (swing_start == true)){
       syslog(7,"スィング開始");
       swing_neck();
@@ -290,8 +310,8 @@ void Tracer::run() {
         clock.reset();
         fast_yellow_district_after = false;
       }
-      if (clock.now() > 1500000){
-        syslog(7,"黄色を超えた");
+      if (clock.now() > 1500000){ //黄色の丸を超えた後にゆっくり走り出す
+        //syslog(7,"ゆっくり走り出す");
         float turn = calc_porp_value() + derivative_control() + IntegralControl();
         int pwm_l = yellow_district_after_pwm - turn;
         int pwm_r = yellow_district_after_pwm + turn;

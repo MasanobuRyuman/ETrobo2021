@@ -54,11 +54,11 @@ private:
   void color_sensor();
   rgb_raw_t rgb;
   bool line_status_blue = false;
+  bool line_status_yellow=false;
   bool line_status_green = false;
   int yellow_count = 0;
   int map_status=0;
   bool swing = true;
-  bool yellow_in_flag=false;
   bool swing_start = true;
   bool swing_time_start = true;
   bool swing_key = true;
