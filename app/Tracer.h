@@ -36,4 +36,6 @@ private:
   const float kd = 10.0;
   const float ki = 0.8 ;
   int light_log_index = 0;
+  int light_log[20];
+  int light_log_was_made = 0;
 };
