@@ -4,7 +4,12 @@
 using namespace ev3api;  
 
 Tracer::Tracer():
-  leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { // <2>
+  leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { 
+  for(int i=0; i<20; i++)
+    {
+      light_log[i] = 0;
+    }
+    // <2>
   }
 
 void Tracer::init() {
@@ -43,13 +48,6 @@ float Tracer::IntegralControl(){
   int light_integra;
   int diff;
 
-  if (line_status_blue == true){
-    diff = colorSensor.getBrightness() - blue_target;
-  }else if (line_status_green = true){
-    diff = colorSensor.getBrightness() - green_target;
-  }else{
-    diff = colorSensor.getBrightness() - target;
-  }
   light_log[light_log_index] = diff;
 	light_log_index = (light_log_index+1) % LIGHT_LOG_SIZE;
   light_integra = 0;
@@ -67,6 +65,35 @@ float Tracer::IntegralControl(){
     return (ki * (light_integra / LIGHT_LOG_SIZE));
   }
 
+}
+//I制御の簡単な実装。
+float Tracer::IntegralControl(){
+  int LIGHT_LOG_SIZE = 20;
+  //int light_log[20];
+  int light_integra;
+  if (line_status_blue == true){
+    diff = colorSensor.getBrightness() - blue_target;
+  }else if (line_status_green = true){
+    diff = colorSensor.getBrightness() - green_target;
+  }else{
+    diff = colorSensor.getBrightness() - target;
+  }
+  light_log[light_log_index] = diff;
+	light_log_index = (light_log_index+1) % LIGHT_LOG_SIZE;
+  light_integra = 0;
+	for(int i=0;i<LIGHT_LOG_SIZE;i++){
+		light_integra += light_log[i];
+    //char s[256];
+    //sprintf(s, "%d", light_integra);
+    //syslog(7, s);
+	}
+  if (line_status_blue == true){
+    return (ki * (light_integra / LIGHT_LOG_SIZE));
+  }else if (line_status_green = true){
+    return (green_ki * (light_integra / LIGHT_LOG_SIZE));
+  }else{
+    return (ki * (light_integra / LIGHT_LOG_SIZE));
+  }
 }
 
 //D制御
@@ -107,6 +134,7 @@ float get_direction_change(int rm,int lm)
   //角度を返す（ラジアン)
   return distance / 100;//仮 タイヤの間の距離mm
 }
+
 
 void Tracer::color_sensor(){
   colorSensor.getRawColor(rgb);
@@ -157,6 +185,9 @@ void Tracer::run() {
   /*
   float turn = calc_porp_value()+derivative_control() + IntegralControl();
   int pwm_l = pwm + turn;
+  msg_f("running...", 1);
+  float turn = calc_porp_value()+IntegralControl()+derivative_control();
+  int pwm_l = pwm - turn;
   int pwm_r = pwm + turn;
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
@@ -335,7 +366,6 @@ void Tracer::run() {
       rightWheel.setPWM(pwm_r);
     }
   }
-  
 }
 
 

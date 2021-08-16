@@ -51,6 +51,7 @@ private:
   const float ki = 0;
   const float green_ki = 0;
   int light_log_index = 0;
+
   void color_sensor();
   rgb_raw_t rgb;
   bool line_status_blue = false;
@@ -70,4 +71,7 @@ private:
   bool yellow_district_after = false;
   bool fast_yellow_district_after = true;
   bool red_flag = false;
+  int light_log[20];
+  int light_log_was_made = 0;
+
 };
