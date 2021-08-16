@@ -41,36 +41,13 @@ float Tracer::calc_porp_value(){
   }
 }
 
-//I制御の簡単な実装。
-float Tracer::IntegralControl(){
-  int LIGHT_LOG_SIZE = 20;
-  int light_log[20];
-  int light_integra;
-  int diff;
 
-  light_log[light_log_index] = diff;
-	light_log_index = (light_log_index+1) % LIGHT_LOG_SIZE;
-  light_integra = 0;
-	for(int i=0;i<LIGHT_LOG_SIZE;i++){
-		light_integra += light_log[i];
-    //char s[256];
-    //sprintf(s, "%d", light_log[i]);
-    //syslog(7, s);
-	}
-  if (line_status_blue == true){
-    return (ki * (light_integra / LIGHT_LOG_SIZE));
-  }else if (line_status_green = true){
-    return (green_ki * (light_integra / LIGHT_LOG_SIZE));
-  }else{
-    return (ki * (light_integra / LIGHT_LOG_SIZE));
-  }
-
-}
 //I制御の簡単な実装。
 float Tracer::IntegralControl(){
   int LIGHT_LOG_SIZE = 20;
   //int light_log[20];
   int light_integra;
+  int diff;
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
   }else if (line_status_green = true){
