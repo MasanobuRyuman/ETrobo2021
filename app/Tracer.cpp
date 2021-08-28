@@ -27,15 +27,18 @@ float Tracer::calc_porp_value(){
   const int bias = 0;
   int diff;
   if (line_status_blue == true){
-    //syslog(7,"blueline");
+    syslog(7,"blueline");
     diff = colorSensor.getBrightness() - blue_target;
     return (kp * diff + bias);
   }else if (line_status_green == true){
-    //syslog(7,"greenline");
+    syslog(7,"greenline");
     diff = colorSensor.getBrightness() - green_target;
     return (green_kp * diff + bias);
+  }else if (last_caurce == true){
+    diff = colorSensor.getBrightness() - last_target;
+    return (green_kp * diff + bias);
   }else{
-    //syslog(7,"通常のpid制御");
+    syslog(7,"通常のpid制御");
     diff = colorSensor.getBrightness() - target;
     return (kp * diff + bias);
   }
@@ -50,8 +53,10 @@ float Tracer::IntegralControl(){
   int diff;
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
     diff = colorSensor.getBrightness() - green_target;
+  }else if (last_caurce == true){
+    diff = colorSensor.getBrightness() - last_target;
   }else{
     diff = colorSensor.getBrightness() - target;
   }
@@ -79,9 +84,12 @@ float Tracer::derivative_control(){
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
     return (kd * (diff - prev_diff));
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
     diff = colorSensor.getBrightness() - green_target;
     return (green_kd * (diff - prev_diff));
+  }else if (last_caurce == true){
+    diff = colorSensor.getBrightness() - last_target;
+    return (kd * (diff - prev_diff));
   }else{
     diff = colorSensor.getBrightness() - target;
     return (kd * (diff - prev_diff));
@@ -117,6 +125,7 @@ void Tracer::color_sensor(){
   colorSensor.getRawColor(rgb);
 }
 
+//黄色の丸を超えたら首を振る
 void Tracer::swing_neck(){
   if (swing_time_start == true){
     swing_time_start = false;
@@ -142,7 +151,7 @@ void Tracer::swing_neck(){
       getting_brighter = false;
     }
     
-    if ((getting_brighter == true) & (now_brightness >= 17)){
+    if ((getting_brighter == true) & (now_brightness >= 17) & (rgb.r < 100) & (rgb.g < 100) & (rgb.b < 120)){
       //syslog(7,"スィング中止");
       swing_key = false;
     }
@@ -171,15 +180,15 @@ void Tracer::run() {
   */
 
   //明るさ測定
-  /*
+  
   char b[256];
   sprintf(b,"%d",colorSensor.getBrightness());
   syslog(7,b);
-  */
+  
   
 
   //rgbの測定
-  /*
+
   char r[256];
   sprintf(r,"%d",rgb.r);
   syslog(7,"r");
@@ -192,7 +201,7 @@ void Tracer::run() {
   sprintf(s,"%d",rgb.b);
   syslog(7,"b");
   syslog(7,s);
-  */
+  
   msg_f("running...", 1);
   double b_r_difference = (double)rgb.b / (rgb.r + 1);
   double b_g_difference = (double)rgb.b / (rgb.g + 1);
@@ -240,7 +249,7 @@ void Tracer::run() {
     rightWheel.setPWM(pwm_r);
   //黄色に入った
   } else if ((r_b_difference > 0.8) & (g_b_difference > 0.8)){
-    //syslog(7,"黄色に入った");
+    syslog(7,"黄色に入った");
     if (line_status_yellow == false){
       //syslog(7,"きた");
       yellow_count += 1;//新しく黄色い線に入ったらカウントを増やす
@@ -254,7 +263,7 @@ void Tracer::run() {
     rightWheel.setPWM(pwm_r);
   //緑色に入った
   } else if ((g_r_difference > 1.0) & (g_b_difference > 1.0)){
-    //syslog(7,"緑に入った");
+    syslog(7,"緑に入った");
     line_status_green = true;
     //yellow_district_after = false;
     /*
@@ -334,6 +343,9 @@ void Tracer::run() {
       }
       
     } else {
+      if (line_status_green == true){
+        last_caurce = true;
+      }
       syslog(7,"通常モード");
       line_status_blue = false;
       line_status_green = false;

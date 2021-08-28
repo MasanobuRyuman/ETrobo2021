@@ -41,6 +41,7 @@ private:
   //青い線を通る時の基準値
   const int blue_target = 28;
   const int green_target = 26;
+  const int last_target = 19;
   int prev_diff = 0;
   const float kp = 0.83;
   const float green_kp = 1.0f;
@@ -71,6 +72,7 @@ private:
   bool yellow_district_after = false;
   bool fast_yellow_district_after = true;
   bool red_flag = false;
+  bool last_caurce = false;
   int light_log[20];
   int light_log_was_made = 0;
 
