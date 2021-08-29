@@ -47,7 +47,7 @@ private:
   const float green_kp = 1.0f;
   //pwmの値がmax / 1　の時
   const float maxkp = 1.0;
-  const float kd = 0;
+  const float kd = 1.0;
   const float green_kd = 2.0f;
   const float ki = 0;
   const float green_ki = 0;
