@@ -50,8 +50,9 @@ private:
   //pwmの値がmax / 1　の時
   const float maxkp = 1.0;
   const float kd = 1.0;
+
   const float green_kd = 2.0f;
-  const float ki = 0;
+  const float ki = 0.0;//i制御の際の定数。
   const float green_ki = 0;
   int light_log_index = 0;
 
@@ -77,5 +78,6 @@ private:
   bool last_caurce = false;
   int light_log[20];
   int light_log_was_made = 0;
+
 
 };
