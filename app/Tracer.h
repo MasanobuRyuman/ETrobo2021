@@ -27,6 +27,8 @@ private:
   const int8_t pwm = (Motor::PWM_MAX) / 2;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
+  const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 2;
 
   int tracerStatus = 0;
   float body_direction;
@@ -41,12 +43,14 @@ private:
   //青い線を通る時の基準値
   const int blue_target = 28;
   const int green_target = 26;
+  const int last_target = 19;
   int prev_diff = 0;
   const float kp = 0.83;
   const float green_kp = 1.0f;
   //pwmの値がmax / 1　の時
   const float maxkp = 1.0;
-  const float kd = 0.7;
+  const float kd = 1.0;
+
   const float green_kd = 2.0f;
   const float ki = 0.0;//i制御の際の定数。
   const float green_ki = 0;
@@ -71,6 +75,9 @@ private:
   bool yellow_district_after = false;
   bool fast_yellow_district_after = true;
   bool red_flag = false;
-  int light_log[20];//i制御のための記録を残しておくための配列
+  bool last_caurce = false;
+  int light_log[20];
+  int light_log_was_made = 0;
+
 
 };

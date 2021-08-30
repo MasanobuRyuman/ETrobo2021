@@ -24,33 +24,40 @@ void Tracer::terminate() {
 
 //p制御
 float Tracer::calc_porp_value(){
+  syslog(7,"p制御");
   const int bias = 0;
   int diff;
   if (line_status_blue == true){
-    //syslog(7,"blueline");
+    syslog(7,"blueline");
     diff = colorSensor.getBrightness() - blue_target;
     return (kp * diff + bias);
   }else if (line_status_green == true){
-    //syslog(7,"greenline");
+    syslog(7,"greenline");
     diff = colorSensor.getBrightness() - green_target;
     return (green_kp * diff + bias);
+  }else if (last_caurce == true){
+    syslog(7,"最後の直線");
+    diff = colorSensor.getBrightness() - last_target;
+    return (green_kp * diff + bias);
   }else{
-    //syslog(7,"通常のpid制御");
+    syslog(7,"通常のpid制御");
     diff = colorSensor.getBrightness() - target;
     return (kp * diff + bias);
   }
 }
 
 
-//I制御の簡単な実装。
+//I制御の実装。
 float Tracer::IntegralControl(){
   int LIGHT_LOG_SIZE = 20;//配列light_logの大きさを示す。
   int light_integra;//配列light_logの総和。これの平均値をi制御にて使用する。
   int diff;
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
     diff = colorSensor.getBrightness() - green_target;
+  }else if (last_caurce == true){
+    diff = colorSensor.getBrightness() - last_target;
   }else{
     diff = colorSensor.getBrightness() - target;
   }
@@ -62,7 +69,7 @@ float Tracer::IntegralControl(){
 	}
   if (line_status_blue == true){
     return (ki * (light_integra / LIGHT_LOG_SIZE));
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
     return (green_ki * (light_integra / LIGHT_LOG_SIZE));
   }else{
     return (ki * (light_integra / LIGHT_LOG_SIZE));
@@ -75,9 +82,13 @@ float Tracer::derivative_control(){
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
     return (kd * (diff - prev_diff));
-  }else if (line_status_green = true){
+  }else if (line_status_green == true){
     diff = colorSensor.getBrightness() - green_target;
     return (green_kd * (diff - prev_diff));
+  }else if (last_caurce == true){
+    syslog(7,"d制御が最後のコース");
+    diff = colorSensor.getBrightness() - last_target;
+    return (kd * (diff - prev_diff));
   }else{
     diff = colorSensor.getBrightness() - target;
     return (kd * (diff - prev_diff));
@@ -113,6 +124,7 @@ void Tracer::color_sensor(){
   colorSensor.getRawColor(rgb);
 }
 
+//黄色の丸を超えたら首を振る
 void Tracer::swing_neck(){
   if (swing_time_start == true){
     swing_time_start = false;
@@ -124,7 +136,7 @@ void Tracer::swing_neck(){
   sprintf(r,"%d",clock.now());
   syslog(7,r);
   */
-  if ((clock.now() <= 300000) & (swing_key == true)){
+  if(swing_key == true){
     //syslog(7,"kita");
     leftWheel.setPWM(30);
     rightWheel.setPWM(0);
@@ -138,7 +150,7 @@ void Tracer::swing_neck(){
       getting_brighter = false;
     }
     
-    if ((getting_brighter == true) & (now_brightness >= 17)){
+    if ((clock.now() >=  2000) & ((getting_brighter == true) & (now_brightness >= 17) & (rgb.r < 100) & (rgb.g < 100) & (rgb.b < 120))){
       //syslog(7,"スィング中止");
       swing_key = false;
     }
@@ -225,32 +237,36 @@ void Tracer::run() {
   */
 
   //ここから
+  //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
+  if (red_flag == true){
+    syslog(7,"最後の直しん");
+    leftWheel.setPWM(straight_pwm);
+    rightWheel.setPWM(straight_pwm);
+    if (clock.now() > 2800000){
+      terminate();
+    }
   //青色に入った
-  if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
+  } else if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
     //syslog(7,"青色に入った");
     line_status_blue = true;
     float turn = calc_porp_value()+derivative_control()+IntegralControl();
-    int pwm_l = pwm - turn;
-    int pwm_r = pwm + turn;
+    int pwm_l = difficulty_cource_pwm - turn;
+    int pwm_r = difficulty_cource_pwm + turn;
     leftWheel.setPWM(pwm_l);
     rightWheel.setPWM(pwm_r);
   //黄色に入った
   } else if ((r_b_difference > 0.8) & (g_b_difference > 0.8)){
-    //syslog(7,"黄色に入った");
+    syslog(7,"黄色に入った");
     if (line_status_yellow == false){
       //syslog(7,"きた");
       yellow_count += 1;//新しく黄色い線に入ったらカウントを増やす
     }
     line_status_yellow = true;
-    
-    float turn = calc_porp_value()+derivative_control() + IntegralControl();
-    int pwm_l = pwm + turn;
-    int pwm_r = pwm + turn;
-    leftWheel.setPWM(pwm_l);
-    rightWheel.setPWM(pwm_r);
+    leftWheel.setPWM(straight_pwm);
+    rightWheel.setPWM(straight_pwm);
   //緑色に入った
   } else if ((g_r_difference > 1.0) & (g_b_difference > 1.0)){
-    //syslog(7,"緑に入った");
+    syslog(7,"緑に入った");
     line_status_green = true;
     //yellow_district_after = false;
     /*
@@ -277,26 +293,19 @@ void Tracer::run() {
     int pwm_r = green_pwm + turn;
     leftWheel.setPWM(pwm_l);
     rightWheel.setPWM(pwm_r);
+  
   //赤色に入った
   } else if ((r_g_difference > 1.2) & (r_b_difference > 1.2)){
     syslog(7,"赤色");
     red_flag = true;
-    float turn = calc_porp_value() + derivative_control() + IntegralControl();
-    int pwm_l = pwm + turn;
-    int pwm_r = pwm + turn;
-    leftWheel.setPWM(pwm_l);
-    rightWheel.setPWM(pwm_r);
+    leftWheel.setPWM(straight_pwm);
+    rightWheel.setPWM(straight_pwm);
     clock.reset();
-  } else if (red_flag == true){
-    float turn = calc_porp_value() + derivative_control() + IntegralControl();
-    int pwm_l = pwm + turn;
-    int pwm_r = pwm + turn;
-    leftWheel.setPWM(pwm_l);
-    rightWheel.setPWM(pwm_r);
-    if (clock.now() > 1400000){
-      terminate();
-    }
   } else {
+    if (line_status_green == true){
+        last_caurce = true;
+        syslog(7,"緑が終わった");
+    }
     line_status_yellow = false;//黄色い線に入っていない
     line_status_blue = false;//青の線に入っていない
     line_status_green = false;//緑のせんに入っていない
@@ -304,11 +313,8 @@ void Tracer::run() {
       syslog(7,"スィング開始");
       swing_neck();
     } else if (yellow_count == 1){
-      float turn = calc_porp_value() + derivative_control() + IntegralControl();
-      int pwm_l = pwm + turn;
-      int pwm_r = pwm + turn;
-      leftWheel.setPWM(pwm_l);
-      rightWheel.setPWM(pwm_r);
+      leftWheel.setPWM(straight_pwm);
+      rightWheel.setPWM(straight_pwm);
     } else if (yellow_district_after == true){
       if (fast_yellow_district_after == true){
         clock.reset();
@@ -323,8 +329,8 @@ void Tracer::run() {
         rightWheel.setPWM(pwm_r);
       }else{
         float turn = calc_porp_value() + derivative_control() + IntegralControl();
-        int pwm_l = pwm - turn;
-        int pwm_r = pwm + turn;
+        int pwm_l = difficulty_cource_pwm - turn;
+        int pwm_r = difficulty_cource_pwm + turn;
         leftWheel.setPWM(pwm_l);
         rightWheel.setPWM(pwm_r);
       }
@@ -335,8 +341,8 @@ void Tracer::run() {
       line_status_green = false;
       line_status_yellow = false;
       float turn = calc_porp_value() + derivative_control() + IntegralControl();
-      int pwm_l = pwm - turn;
-      int pwm_r = pwm + turn;
+      int pwm_l = difficulty_cource_pwm - turn;
+      int pwm_r = difficulty_cource_pwm + turn;
       leftWheel.setPWM(pwm_l);
       rightWheel.setPWM(pwm_r);
     }
