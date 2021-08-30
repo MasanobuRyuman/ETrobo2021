@@ -320,7 +320,7 @@ void Tracer::run() {
         clock.reset();
         fast_yellow_district_after = false;
       }
-      if (clock.now() > 1500000){ //黄色の丸を超えた後にゆっくり走り出す
+      if (clock.now() > 1){ //黄色の丸を超えた後にゆっくり走り出す
         //syslog(7,"ゆっくり走り出す");
         float turn = calc_porp_value() + derivative_control() + IntegralControl();
         int pwm_l = yellow_district_after_pwm - turn;
