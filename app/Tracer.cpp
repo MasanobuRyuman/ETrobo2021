@@ -5,7 +5,7 @@ using namespace ev3api;
 
 Tracer::Tracer():
   leftWheel(PORT_C), rightWheel(PORT_B), colorSensor(PORT_3) { 
-  for(int i=0; i<20; i++)
+  for(int i=0; i<20; i++)//最初に呼び出しlight_logを初期化し中身を0にする。
     {
       light_log[i] = 0;
     }
@@ -49,9 +49,8 @@ float Tracer::calc_porp_value(){
 
 //I制御の実装。
 float Tracer::IntegralControl(){
-  int LIGHT_LOG_SIZE = 20;
-  //int light_log[20];
-  int light_integra;
+  int LIGHT_LOG_SIZE = 20;//配列light_logの大きさを示す。
+  int light_integra;//配列light_logの総和。これの平均値をi制御にて使用する。
   int diff;
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
@@ -67,9 +66,6 @@ float Tracer::IntegralControl(){
   light_integra = 0;
 	for(int i=0;i<LIGHT_LOG_SIZE;i++){
 		light_integra += light_log[i];
-    //char s[256];
-    //sprintf(s, "%d", light_integra);
-    //syslog(7, s);
 	}
   if (line_status_blue == true){
     return (ki * (light_integra / LIGHT_LOG_SIZE));
