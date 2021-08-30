@@ -242,6 +242,7 @@ void Tracer::run() {
 
   //ここから
   //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
+  
   if (red_flag == true){
     syslog(7,"最後の直しん");
     leftWheel.setPWM(straight_pwm);
@@ -251,7 +252,10 @@ void Tracer::run() {
     }
   //青色に入った
   } else if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
-    //syslog(7,"青色に入った");
+    syslog(7,"青色に入った");
+    if (line_status_blue == false){
+      blue_count += 1;
+    }
     line_status_blue = true;
     float turn = calc_porp_value()+derivative_control()+IntegralControl();
     int pwm_l = difficulty_cource_pwm - turn;
@@ -306,6 +310,7 @@ void Tracer::run() {
     rightWheel.setPWM(straight_pwm);
     clock.reset();
   } else {
+    syslog(7,"通常");
     if (line_status_green == true){
         last_caurce = true;
         syslog(7,"緑が終わった");
@@ -324,7 +329,7 @@ void Tracer::run() {
         clock.reset();
         fast_yellow_district_after = false;
       }
-      if (clock.now() > 1500000){ //黄色の丸を超えた後にゆっくり走り出す
+      if (clock.now() > 1){ //黄色の丸を超えた後にゆっくり走り出す
         //syslog(7,"ゆっくり走り出す");
         float turn = calc_porp_value() + derivative_control() + IntegralControl();
         int pwm_l = yellow_district_after_pwm - turn;
