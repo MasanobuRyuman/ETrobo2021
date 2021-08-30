@@ -27,6 +27,8 @@ private:
   const int8_t pwm = (Motor::PWM_MAX) / 2;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
+  const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 2;
 
   int tracerStatus = 0;
   float body_direction;
