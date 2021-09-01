@@ -28,7 +28,7 @@ private:
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
   const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
-  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
   
   int tracerStatus = 0;
@@ -79,13 +79,9 @@ private:
   bool last_caurce = false;
   int light_log[20];
   int light_log_was_made = 0;
-<<<<<<< HEAD
   int blue_count = 0;
   bool blue_after_fast = false;
   bool blue_slow_run_end = false;
-  int eria = 1;
-=======
+  int area = 8;
 
-
->>>>>>> master
 };

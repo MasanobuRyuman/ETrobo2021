@@ -24,7 +24,7 @@ void Tracer::terminate() {
 
 //p制御
 float Tracer::calc_porp_value(){
-  syslog(7,"p制御");
+  //syslog(7,"p制御");
   const int bias = 0;
   int diff;
   if (line_status_blue == true){
@@ -238,120 +238,137 @@ void Tracer::run() {
 
   //ここから
   //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
-  
-  if (red_flag == true){
-    syslog(7,"最後の直しん");
-    leftWheel.setPWM(straight_pwm);
-    rightWheel.setPWM(straight_pwm);
-    if (clock.now() > 2800000){
-      terminate();
-    }
-  //青色に入った
-  } else if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
-    syslog(7,"青色に入った");
-    if (line_status_blue == false){
-      blue_count += 1;
-    }
-    line_status_blue = true;
-    float turn = calc_porp_value()+derivative_control()+IntegralControl();
-    int pwm_l = difficulty_cource_pwm - turn;
-    int pwm_r = difficulty_cource_pwm + turn;
-    leftWheel.setPWM(pwm_l);
-    rightWheel.setPWM(pwm_r);
-  //黄色に入った
-  } else if ((r_b_difference > 0.8) & (g_b_difference > 0.8)){
-    syslog(7,"黄色に入った");
-    if (line_status_yellow == false){
-      //syslog(7,"きた");
-      yellow_count += 1;//新しく黄色い線に入ったらカウントを増やす
-    }
-    line_status_yellow = true;
-    leftWheel.setPWM(straight_pwm);
-    rightWheel.setPWM(straight_pwm);
-  //緑色に入った
-  } else if ((g_r_difference > 1.0) & (g_b_difference > 1.0)){
-    syslog(7,"緑に入った");
-    line_status_green = true;
-    //yellow_district_after = false;
-    /*
-    if (fast_green == true){
-      clock.reset();
-      fast_green = false;
-    }
-    */
-    //最初は機体を傾ける
-    /*if (clock.now() < 100000){
-      leftWheel.setPWM(40);
-      rightWheel.setPWM(0);
-    }else{
-      syslog(7,"傾きが終わった");
-      float turn = calc_porp_value() + derivative_control() + IntegralControl();
-      int pwm_l = green_pwm - turn;
-      int pwm_r = green_pwm + turn;
-      leftWheel.setPWM(pwm_l);
-      rightWheel.setPWM(pwm_r);
-    }
-    */
-    float turn = calc_porp_value() + derivative_control() + IntegralControl();
-    int pwm_l = green_pwm - turn;
-    int pwm_r = green_pwm + turn;
-    leftWheel.setPWM(pwm_l);
-    rightWheel.setPWM(pwm_r);
-  
-  //赤色に入った
-  } else if ((r_g_difference > 1.2) & (r_b_difference > 1.2)){
-    syslog(7,"赤色");
-    red_flag = true;
-    leftWheel.setPWM(straight_pwm);
-    rightWheel.setPWM(straight_pwm);
-    clock.reset();
-  } else {
-    syslog(7,"通常");
-    if (line_status_green == true){
-        last_caurce = true;
-        syslog(7,"緑が終わった");
-    }
-    line_status_yellow = false;//黄色い線に入っていない
-    line_status_blue = false;//青の線に入っていない
-    line_status_green = false;//緑のせんに入っていない
-    if ((yellow_count >= 2) & (swing_start == true)){
-      syslog(7,"スィング開始");
-      swing_neck();
-    } else if (yellow_count == 1){
-      leftWheel.setPWM(straight_pwm);
-      rightWheel.setPWM(straight_pwm);
-    } else if (yellow_district_after == true){
-      if (fast_yellow_district_after == true){
-        clock.reset();
-        fast_yellow_district_after = false;
-      }
-      if (clock.now() > 1){ //黄色の丸を超えた後にゆっくり走り出す
-        //syslog(7,"ゆっくり走り出す");
-        float turn = calc_porp_value() + derivative_control() + IntegralControl();
-        int pwm_l = yellow_district_after_pwm - turn;
-        int pwm_r = yellow_district_after_pwm + turn;
+  switch(area){
+    case 1: 
+      syslog(7,"area1");
+      break;
+    case 2:
+      syslog(7,"area2");
+      break;
+    case 3:
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+      if (red_flag == true){
+        syslog(7,"最後の直しん");
+        leftWheel.setPWM(straight_pwm);
+        rightWheel.setPWM(straight_pwm);
+        if (clock.now() > 2800000){
+          terminate();
+        }
+      //青色に入った
+      } else if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
+        syslog(7,"青色に入った");
+        if (line_status_blue == false){
+          blue_count += 1;
+        }
+        line_status_blue = true;
+        float turn = calc_porp_value()+derivative_control()+IntegralControl();
+        int pwm_l = difficulty_cource_pwm - turn;
+        int pwm_r = difficulty_cource_pwm + turn;
         leftWheel.setPWM(pwm_l);
         rightWheel.setPWM(pwm_r);
-      }else{
+      //黄色に入った
+      } else if ((r_b_difference > 0.8) & (g_b_difference > 0.8)){
+        syslog(7,"黄色に入った");
+        if (line_status_yellow == false){
+          //syslog(7,"きた");
+          yellow_count += 1;//新しく黄色い線に入ったらカウントを増やす
+        }
+        line_status_yellow = true;
+        leftWheel.setPWM(straight_pwm);
+        rightWheel.setPWM(straight_pwm);
+      //緑色に入った
+      } else if ((g_r_difference > 1.0) & (g_b_difference > 1.0)){
+        syslog(7,"緑に入った");
+        line_status_green = true;
+        //yellow_district_after = false;
+        /*
+        if (fast_green == true){
+          clock.reset();
+          fast_green = false;
+        }
+        */
+        //最初は機体を傾ける
+        /*if (clock.now() < 100000){
+          leftWheel.setPWM(40);
+          rightWheel.setPWM(0);
+        }else{
+          syslog(7,"傾きが終わった");
+          float turn = calc_porp_value() + derivative_control() + IntegralControl();
+          int pwm_l = green_pwm - turn;
+          int pwm_r = green_pwm + turn;
+          leftWheel.setPWM(pwm_l);
+          rightWheel.setPWM(pwm_r);
+        }
+        */
+        float turn = calc_porp_value() + derivative_control() + IntegralControl();
+        int pwm_l = green_pwm - turn;
+        int pwm_r = green_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+  
+      //赤色に入った
+      } else if ((r_g_difference > 1.2) & (r_b_difference > 1.2)){
+        syslog(7,"赤色");
+        red_flag = true;
+        leftWheel.setPWM(straight_pwm);
+        rightWheel.setPWM(straight_pwm);
+        clock.reset();
+      } else {
+        syslog(7,"通常");
+        if (line_status_green == true){
+          last_caurce = true;
+          syslog(7,"緑が終わった");
+        }
+        line_status_yellow = false;//黄色い線に入っていない
+        line_status_blue = false;//青の線に入っていない
+        line_status_green = false;//緑のせんに入っていない
+        if ((yellow_count >= 2) & (swing_start == true)){
+        syslog(7,"スィング開始");
+        swing_neck();
+      } else if (yellow_count == 1){
+        leftWheel.setPWM(straight_pwm);
+        rightWheel.setPWM(straight_pwm);
+      } else if (yellow_district_after == true){
+        if (fast_yellow_district_after == true){
+          clock.reset();
+          fast_yellow_district_after = false;
+        }
+        if (clock.now() > 1){ //黄色の丸を超えた後にゆっくり走り出す
+          //syslog(7,"ゆっくり走り出す");
+          float turn = calc_porp_value() + derivative_control() + IntegralControl();
+          int pwm_l = yellow_district_after_pwm - turn;
+          int pwm_r = yellow_district_after_pwm + turn;
+          leftWheel.setPWM(pwm_l);
+          rightWheel.setPWM(pwm_r);
+        }else{
+          float turn = calc_porp_value() + derivative_control() + IntegralControl();
+          int pwm_l = difficulty_cource_pwm - turn;
+          int pwm_r = difficulty_cource_pwm + turn;
+          leftWheel.setPWM(pwm_l);
+          rightWheel.setPWM(pwm_r);
+        }
+      
+      } else {
+        syslog(7,"通常モード");
+        line_status_blue = false;
+        line_status_green = false;
+        line_status_yellow = false;
         float turn = calc_porp_value() + derivative_control() + IntegralControl();
         int pwm_l = difficulty_cource_pwm - turn;
         int pwm_r = difficulty_cource_pwm + turn;
         leftWheel.setPWM(pwm_l);
         rightWheel.setPWM(pwm_r);
       }
-      
-    } else {
-      syslog(7,"通常モード");
-      line_status_blue = false;
-      line_status_green = false;
-      line_status_yellow = false;
-      float turn = calc_porp_value() + derivative_control() + IntegralControl();
-      int pwm_l = difficulty_cource_pwm - turn;
-      int pwm_r = difficulty_cource_pwm + turn;
-      leftWheel.setPWM(pwm_l);
-      rightWheel.setPWM(pwm_r);
     }
+    
   }
+  
+ 
 }
 
 
