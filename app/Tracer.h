@@ -42,7 +42,7 @@ private:
   int32_t left_counts;
   int32_t right_counts;
 
-  float x=-17; //x座標
+  float x=-35; //x座標
   float y=0; //y座標
 
   int32_t bef_cl = 0;//前回のカウント
@@ -50,9 +50,8 @@ private:
   float now_angle;//今の向き
   void get_coordinates(int32_t cl, int32_t cr);
 
-  const int target = 10;
-  int prev_diff = 0;
-  const float kd = 10.0f;
+
+
   char s[256];
 
   int area=1;
@@ -62,7 +61,7 @@ private:
   float v_length;
 
   float d0=0;//基準点角度
-  float x0 = -17; //x座標
+  float x0 = -35; //x座標
   float y0 = 0;   //y座標
   int32_t cl0=0; //基準点カウント左
   int32_t cr0=0; //基準点カウント右

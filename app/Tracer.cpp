@@ -25,23 +25,23 @@ void Tracer::terminate() {
 
 //p制御
 float Tracer::calc_porp_value(){
-  syslog(7,"p制御");
+  //syslog(7,"p制御");
   const int bias = 0;
   int diff;
   if (line_status_blue == true){
-    syslog(7,"blueline");
+    //syslog(7,"blueline");
     diff = colorSensor.getBrightness() - blue_target;
     return (kp * diff + bias);
   }else if (line_status_green == true){
-    syslog(7,"greenline");
+    //syslog(7,"greenline");
     diff = colorSensor.getBrightness() - green_target;
     return (green_kp * diff + bias);
   }else if (last_caurce == true){
-    syslog(7,"最後の直線");
+    //syslog(7,"最後の直線");
     diff = colorSensor.getBrightness() - last_target;
     return (green_kp * diff + bias);
   }else{
-    syslog(7,"通常のpid制御");
+    //syslog(7,"通常のpid制御");
     diff = colorSensor.getBrightness() - target;
     return (kp * diff + bias);
   }
@@ -87,7 +87,7 @@ float Tracer::derivative_control(){
     diff = colorSensor.getBrightness() - green_target;
     return (green_kd * (diff - prev_diff));
   }else if (last_caurce == true){
-    syslog(7,"d制御が最後のコース");
+    //syslog(7,"d制御が最後のコース");
     diff = colorSensor.getBrightness() - last_target;
     return (kd * (diff - prev_diff));
   }else{
@@ -419,7 +419,7 @@ void Tracer::run() {
     cl0 = left_counts;
     cr0 = right_counts;
   }
-  if (area==1 && x>=821){//第2エリア
+  if (area==1 && x>=815){//821){//第2エリア
     area=2;
 
     syslog(7, "第2エリアに入りました");
@@ -529,9 +529,9 @@ void Tracer::run() {
     //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
-    pwm=pwm/3;
+
   }
-  if (area == 6 && y >= 818.09){ //第７エリア
+  if (area == 6 && y >= 805){//818.09){ //第７エリア
     area = 7;
 
     syslog(7, "第7エリアに入りました");
@@ -544,8 +544,8 @@ void Tracer::run() {
   //sprintf(s, "%ld %ld", left_counts, right_counts);
   //syslog(7, s);
   //syslog(7, "座標");
-  sprintf(s, "%lf %lf", x, y);
-  syslog(7, s);
+  //sprintf(s, "%lf %lf", x, y);
+  //syslog(7, s);
   msg_f("running...", 1);
 
 
@@ -623,7 +623,7 @@ void Tracer::run() {
 
   if (red_flag == true)
   {
-    syslog(7, "最後の直しん");
+    //syslog(7, "最後の直しん");
     leftWheel.setPWM(straight_pwm);
     rightWheel.setPWM(straight_pwm);
     if (clock.now() > 2800000)
@@ -634,7 +634,7 @@ void Tracer::run() {
   }
   else if ((b_r_difference > 1.5) & (b_g_difference > 1.5))
   {
-    syslog(7, "青色に入った");
+    //syslog(7, "青色に入った");
     if (line_status_blue == false)
     {
       blue_count += 1;
@@ -649,7 +649,7 @@ void Tracer::run() {
   }
   else if ((r_b_difference > 0.8) & (g_b_difference > 0.8))
   {
-    syslog(7, "黄色に入った");
+    //syslog(7, "黄色に入った");
     if (line_status_yellow == false)
     {
       //syslog(7,"きた");
@@ -662,7 +662,7 @@ void Tracer::run() {
   }
   else if ((g_r_difference > 1.0) & (g_b_difference > 1.0))
   {
-    syslog(7, "緑に入った");
+    //syslog(7, "緑に入った");
     line_status_green = true;
     //yellow_district_after = false;
     /*
@@ -694,7 +694,7 @@ void Tracer::run() {
   }
   else if ((r_g_difference > 1.2) & (r_b_difference > 1.2))
   {
-    syslog(7, "赤色");
+    //syslog(7, "赤色");
     red_flag = true;
     leftWheel.setPWM(straight_pwm);
     rightWheel.setPWM(straight_pwm);
@@ -702,18 +702,18 @@ void Tracer::run() {
   }
   else
   {
-    syslog(7, "通常");
+    //syslog(7, "通常");
     if (line_status_green == true)
     {
       last_caurce = true;
-      syslog(7, "緑が終わった");
+      //syslog(7, "緑が終わった");
     }
     line_status_yellow = false; //黄色い線に入っていない
     line_status_blue = false;   //青の線に入っていない
     line_status_green = false;  //緑のせんに入っていない
     if ((yellow_count >= 2) & (swing_start == true))
     {
-      syslog(7, "スィング開始");
+      //syslog(7, "スィング開始");
       swing_neck();
     }
     else if (yellow_count == 1)
@@ -748,7 +748,7 @@ void Tracer::run() {
     }
     else
     {
-      syslog(7, "通常モード");
+      //syslog(7, "通常モード");
       line_status_blue = false;
       line_status_green = false;
       line_status_yellow = false;
