@@ -17,6 +17,8 @@ void Tracer::init() {
   init_f("Tracer");
 }
 
+
+
 void Tracer::terminate() {
   msg_f("Stopped.", 1);
   leftWheel.stop();  

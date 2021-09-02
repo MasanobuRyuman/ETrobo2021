@@ -19,7 +19,8 @@ private:
   Motor rightWheel;
   ColorSensor colorSensor;
   Clock clock; 
-  const int8_t mThreshold = 28;  
+  
+  const int8_t mThreshold = 28;
   //最高速度
   const int8_t maxPwm = (Motor::PWM_MAX) / 3;
   //直線の最高速度
