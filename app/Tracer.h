@@ -23,10 +23,7 @@ private:
   //最高速度
   const int8_t maxPwm = (Motor::PWM_MAX) / 3;
   //直線の最高速度
-<<<<<<< HEAD
-  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 3;
-  int8_t pwm = (Motor::PWM_MAX) / 3;
-=======
+
   const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1;
   const int8_t pwm = (Motor::PWM_MAX) / 2;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
@@ -34,8 +31,7 @@ private:
   const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
   const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 2;
   const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
-  
->>>>>>> master
+
   int tracerStatus = 0;
   float body_direction;
   float calc_porp_value();
@@ -45,7 +41,6 @@ private:
   void swing_neck();
   int32_t left_counts;
   int32_t right_counts;
-<<<<<<< HEAD
 
   float x=-17; //x座標
   float y=0; //y座標
@@ -72,7 +67,7 @@ private:
   int32_t cl0=0; //基準点カウント左
   int32_t cr0=0; //基準点カウント右
 
-=======
+
   const int target = 19;
   //青い線を通る時の基準値
   const int blue_target = 28;
@@ -112,14 +107,10 @@ private:
   bool last_caurce = false;
   int light_log[20];
   int light_log_was_made = 0;
-<<<<<<< HEAD
+
   int blue_count = 0;
   bool blue_after_fast = false;
   bool blue_slow_run_end = false;
   int eria = 1;
-=======
 
-
->>>>>>> master
->>>>>>> master
 };

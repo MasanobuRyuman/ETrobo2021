@@ -121,7 +121,6 @@ float get_direction_change(int32_t rm,int32_t lm)
 }
 
 
-<<<<<<< HEAD
 
 void Tracer::color_sensor()
 {
