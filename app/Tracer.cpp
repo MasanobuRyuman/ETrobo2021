@@ -77,6 +77,7 @@ void Tracer::get_coordinates(int32_t cl, int32_t cr)
   //sprintf(s, "%f %f %f", ave_angle,cosf(ave_angle), sinf(ave_angle)); //今の角度,基準点から図った今の角度,基準点までの角度
   //syslog(7, s);
 
+/*
   if (halfway_point==1&& x>=410.5){ //第1エリア中間地点
     syslog(7, "第1エリア中間地点に入りましたget_coordinates");
     sprintf(s, "%ld %ld", cl, cr); //今のカウント
@@ -257,6 +258,7 @@ void Tracer::get_coordinates(int32_t cl, int32_t cr)
     sprintf(s, "%lf %lf", x, y); //座標
     syslog(7, s);
   }
+  */
 
   now_angle = new_angle;
   bef_cl = cl;
@@ -276,14 +278,16 @@ void Tracer::run() {
     v_length = sqrt((v_x*v_x)+(v_y*v_y));
 
     syslog(7, "第１エリア中間地点");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_x,x,x0);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_y,y,y0);
-    syslog(7, s);
-    sprintf(s, "%lf", v_length);
-    syslog(7, s);
+    
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_x,x,x0);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_y,y,y0);
+    //syslog(7, s);
+    //sprintf(s, "%lf", v_length);
+    //syslog(7, s);
+    
     x = x0 + v_length;
     y = y0;
     sprintf(s, "%lf %lf", x, y);
@@ -296,8 +300,8 @@ void Tracer::run() {
     area=2;
 
     syslog(7, "第2エリアに入りました");
-    sprintf(s, "%ld %ld",left_counts, right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld",left_counts, right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
@@ -311,8 +315,8 @@ void Tracer::run() {
     //now_angle = 3.141592f / 2;
 
     syslog(7, "第3エリアに入りました");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
@@ -323,14 +327,14 @@ void Tracer::run() {
     v_length = sqrt((v_x*v_x)+(v_y*v_y));
 
     syslog(7, "第3エリア中間地点");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_x, x, x0);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_y, y, y0);
-    syslog(7, s);
-    sprintf(s, "%lf", v_length);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_x, x, x0);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_y, y, y0);
+    //syslog(7, s);
+    //sprintf(s, "%lf", v_length);
+    //syslog(7, s);
 
     x = x0;
     y = y0+v_length;
@@ -346,8 +350,8 @@ void Tracer::run() {
     area=4;
 
     syslog(7, "第4エリアに入りました");
-    sprintf(s, "%ld %ld",left_counts, right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld",left_counts, right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
@@ -360,8 +364,8 @@ void Tracer::run() {
     d0 = 3.141592f;
     //now_angle = 3.141592f;
     syslog(7, "第5エリアに入りました");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
@@ -372,14 +376,14 @@ void Tracer::run() {
     v_length = sqrt((v_x * v_x) + (v_y * v_y));
 
     syslog(7, "第5エリア中間地点");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_x, x, x0);
-    syslog(7, s);
-    sprintf(s, "%lf %lf %lf", v_y, y, y0);
-    syslog(7, s);
-    sprintf(s, "%lf", v_length);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_x, x, x0);
+    //syslog(7, s);
+    //sprintf(s, "%lf %lf %lf", v_y, y, y0);
+    //syslog(7, s);
+    //sprintf(s, "%lf", v_length);
+    //syslog(7, s);
 
     x = x0 - v_length;
     y = y0;
@@ -398,8 +402,8 @@ void Tracer::run() {
     area=6;
 
     syslog(7, "第6エリアに入りました");
-    sprintf(s, "%ld %ld",left_counts,right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld",left_counts,right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
     pwm=pwm/3;
@@ -408,8 +412,8 @@ void Tracer::run() {
     area = 7;
 
     syslog(7, "第7エリアに入りました");
-    sprintf(s, "%ld %ld", left_counts, right_counts);
-    syslog(7, s);
+    //sprintf(s, "%ld %ld", left_counts, right_counts);
+    //syslog(7, s);
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
@@ -417,8 +421,8 @@ void Tracer::run() {
   //sprintf(s, "%ld %ld", left_counts, right_counts);
   //syslog(7, s);
   //syslog(7, "座標");
-  //sprintf(s, "%lf %lf", x, y);
-  //syslog(7, s);
+  sprintf(s, "%lf %lf", x, y);
+  syslog(7, s);
   msg_f("running...", 1);
 
   float turn = calc_porp_value();
