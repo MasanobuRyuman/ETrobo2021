@@ -115,7 +115,7 @@ private:
   int blue_count = 0;
   bool blue_after_fast = false;
   bool blue_slow_run_end = false;
-  int eria = 1;
+  int area = 1;
 
 
 };

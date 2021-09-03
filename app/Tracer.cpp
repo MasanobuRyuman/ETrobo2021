@@ -622,7 +622,6 @@ void Tracer::run() {
 
   //ここから
   //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
-<<<<<<< HEAD
   switch(area){
     case 1: 
       syslog(7,"area1");
