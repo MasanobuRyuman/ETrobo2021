@@ -365,10 +365,7 @@ void Tracer::run() {
         rightWheel.setPWM(pwm_r);
       }
     }
-    
   }
-  
- 
 }
 
 

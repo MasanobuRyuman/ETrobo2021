@@ -1,12 +1,19 @@
 #include "app.h" 
 #include "Tracer.h" 
 #include "Clock.h"  
+#include "TouchSensor.h"
 using namespace ev3api;
 
 Tracer tracer;  
 Clock clock;    
 
 void tracer_task(intptr_t exinf) { 
+  /*
+  if (TouchSensor	(EV3_PORT_1).isPressed()){
+    syslog(7,"kita");
+  }
+  */
+  
   tracer.run(); 
   ext_tsk();
 }
