@@ -3,6 +3,8 @@ extern "C" {
 #endif
 
 #include "ev3api.h"
+#include "util.h"
+
 
 #define MAIN_PRIORITY    (TMIN_APP_TPRI + 1)
 #define TRACER_PRIORITY  (TMIN_APP_TPRI + 2)
@@ -22,4 +24,5 @@ extern void tracer_cyc(intptr_t exinf);
 #ifdef __cplusplus
 }
 #endif
+
 
