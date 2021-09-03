@@ -14,20 +14,20 @@ Clock clock;
 
 
 
-void tracer_task(intptr_t exinf) { 
 
-  ev3_sensor_config (EV3_PORT_1 ,TOUCH_SENSOR );
-  while(1){
-    if(ev3_touch_sensor_is_pressed(EV3_PORT_1)) break;
-  }
+void tracer_task(intptr_t exinf) {
   tracer.run(); 
-  ext_tsk();
+  ext_tsk(); 
 }
 
 void main_task(intptr_t unused) { 
-  const uint32_t duration = 100; 
+  const uint32_t duration = 100;
+  ev3_sensor_config (EV3_PORT_1 ,TOUCH_SENSOR );
 
-  tracer.init(); 
+  while(1){
+    if (ev3_touch_sensor_is_pressed(EV3_PORT_1)) break;         
+  }
+  tracer.init();
   sta_cyc(TRACER_CYC); 
   
   while (!ev3_button_is_pressed(LEFT_BUTTON)) { 
