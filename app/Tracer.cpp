@@ -30,22 +30,49 @@ float Tracer::calc_porp_value(){
   //syslog(7,"p制御");
   const int bias = 0;
   int diff;
-  if (line_status_blue == true){
-    //syslog(7,"blueline");
-    diff = colorSensor.getBrightness() - blue_target;
-    return (kp * diff + bias);
-  }else if (line_status_green == true){
-    //syslog(7,"greenline");
-    diff = colorSensor.getBrightness() - green_target;
-    return (green_kp * diff + bias);
-  }else if (last_caurce == true){
-    //syslog(7,"最後の直線");
-    diff = colorSensor.getBrightness() - last_target;
-    return (green_kp * diff + bias);
-  }else{
-    //syslog(7,"通常のpid制御");
-    diff = colorSensor.getBrightness() - target;
-    return (kp * diff + bias);
+  switch(area){
+    case 1: 
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+      break;
+    case 2:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+      break;
+    case 3:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+      break;
+    case 4:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+    case 5:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+    case 6:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+    case 7:
+      diff = colorSensor.getBrightness() - target;
+      return (kp * diff + bias);
+    case 8:
+      if (line_status_blue == true){
+        //syslog(7,"blueline");
+        diff = colorSensor.getBrightness() - blue_target;
+        return (kp * diff + bias);
+      }else if (line_status_green == true){
+        //syslog(7,"greenline");
+        diff = colorSensor.getBrightness() - green_target;
+        return (green_kp * diff + bias);
+      }else if (last_caurce == true){
+        //syslog(7,"最後の直線");
+        diff = colorSensor.getBrightness() - last_target;
+        return (green_kp * diff + bias);
+      }else{
+        //syslog(7,"通常のpid制御");
+        diff = colorSensor.getBrightness() - target;
+        return (kp * diff + bias);
+      }
   }
 }
 
@@ -55,6 +82,27 @@ float Tracer::IntegralControl(){
   int LIGHT_LOG_SIZE = 20;//配列light_logの大きさを示す。
   int light_integra;//配列light_logの総和。これの平均値をi制御にて使用する。
   int diff;
+  switch(area){
+    case 1: 
+      syslog(7,"area1");
+      turn = calc_porp_value() + IntegralControl() + derivative_control();
+      pwm_l = difficulty_cource_pwm - turn;
+      pwm_r = difficulty_cource_pwm + turn;
+      leftWheel.setPWM(pwm_l);
+      rightWheel.setPWM(pwm_r);
+      break;
+    case 2:
+      syslog(7,"area2");
+      break;
+    case 3:
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+      
+  }
   if (line_status_blue == true){
     diff = colorSensor.getBrightness() - blue_target;
   }else if (line_status_green == true){
@@ -625,6 +673,11 @@ void Tracer::run() {
   switch(area){
     case 1: 
       syslog(7,"area1");
+      turn = calc_porp_value() + IntegralControl() + derivative_control();
+      pwm_l = difficulty_cource_pwm - turn;
+      pwm_r = difficulty_cource_pwm + turn;
+      leftWheel.setPWM(pwm_l);
+      rightWheel.setPWM(pwm_r);
       break;
     case 2:
       syslog(7,"area2");

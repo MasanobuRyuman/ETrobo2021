@@ -21,17 +21,7 @@ private:
   Clock clock; 
   
   const int8_t mThreshold = 28;
-  //最高速度
-  const int8_t maxPwm = (Motor::PWM_MAX) / 3;
-  //直線の最高速度
 
-  const int8_t straightMaxPwm = (Motor::PWM_MAX) / 1;
-  const int8_t pwm = (Motor::PWM_MAX) / 1.2;
-  const int8_t green_pwm = (Motor::PWM_MAX) / 6;
-  const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
-  const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
-  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 1.0;
-  const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
 
   int tracerStatus = 0;
   float body_direction;
@@ -76,14 +66,25 @@ private:
   const int green_target = 26;
   const int last_target = 19;
   int prev_diff = 0;
+
+  
+  //速度
+  const int8_t pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t second_curve_pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t green_pwm = (Motor::PWM_MAX) / 6;
+  const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
+  const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 1.0;
+  const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
+  //P制御の係数
   const float kp = 0.83;
   const float green_kp = 1.0f;
-  //pwmの値がmax / 1　の時
-  const float maxkp = 1.0;
-  const float kd = 2.0;
-
-
+  //D制御の係数
+  const float kd = 2.0；
   const float green_kd = 2.0f;
+  //I制御の係数
   const float ki = 0.5;//i制御の際の定数。
   const float green_ki = 0;
   int light_log_index = 0;
@@ -115,7 +116,11 @@ private:
   int blue_count = 0;
   bool blue_after_fast = false;
   bool blue_slow_run_end = false;
-  int area = 1;
+  int eria = 1;
+
+  float turn;
+  int pwm_l;
+  int pwm_r;
 
 
 };
