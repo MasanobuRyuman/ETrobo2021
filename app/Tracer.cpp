@@ -49,7 +49,7 @@ float Tracer::calc_porp_value(){
       break;
     case 5:
       diff = colorSensor.getBrightness() - target;
-      return (straight_road_kp * diff + bias);
+      return (area5_road_kp * diff + bias);
       break;
     case 6:
       diff = colorSensor.getBrightness() - target;
@@ -143,7 +143,7 @@ float Tracer::IntegralControl(){
       return (second_curve_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 5:
-      return (straight_road_ki * (light_integra / LIGHT_LOG_SIZE));
+      return (area5_road_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 6:
       return (third_curve_ki * (light_integra / LIGHT_LOG_SIZE));
@@ -186,7 +186,7 @@ float Tracer::derivative_control(){
       break;
     case 5:
       diff = colorSensor.getBrightness() - target;
-      return (straight_road_kd * (diff - prev_diff));
+      return (area5_road_kd * (diff - prev_diff));
       break;
     case 6:
       diff = colorSensor.getBrightness() - target;
@@ -739,14 +739,28 @@ void Tracer::run() {
 
   //ここから
   //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
+  if (run_fast == true){
+    clock.reset();
+    run_fast = false;
+  }
   switch(area){
     case 1: 
       syslog(7,"area1");
-      turn = calc_porp_value() + IntegralControl() + derivative_control();
-      pwm_l = straight_road_pwm - turn;
-      pwm_r = straight_road_pwm + turn;
-      leftWheel.setPWM(pwm_l);
-      rightWheel.setPWM(pwm_r);
+      if (clock.now() <= 500000){
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = fast_slow_pwm - turn;
+        pwm_r = fast_slow_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+      }else{
+        syslog(7,"ここから早くなる");
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = straight_road_pwm - turn;
+        pwm_r = straight_road_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+      }
+      
       break;
     case 2:
       syslog(7,"area2");
@@ -772,7 +786,7 @@ void Tracer::run() {
       rightWheel.setPWM(pwm_r);
       break;
     case 5:
-     
+      syslog(7,"エリア5");
       turn = calc_porp_value() + IntegralControl() + derivative_control();
       pwm_l = straight_road_pwm - turn;
       pwm_r = straight_road_pwm + turn;

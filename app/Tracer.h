@@ -33,8 +33,6 @@ private:
   int32_t left_counts;
   int32_t right_counts;
 
-  
-
   float x=-35; //x座標
   float y=0; //y座標
 
@@ -42,8 +40,6 @@ private:
   int32_t bef_cr=0;
   float now_angle;//今の向き
   void get_coordinates(int32_t cl, int32_t cr);
-
-
 
   char s[256];
 
@@ -70,18 +66,20 @@ private:
   
   //速度
   const int8_t pwm = (Motor::PWM_MAX) / 1.2;
-  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t straight_road_pwm = (Motor::PWM_MAX) / 1.0;
-  const int8_t second_curve_pwm = (Motor::PWM_MAX) / 1.2;
-  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t second_curve_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 2;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
   const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
   const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 1.0;
   const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
+  const int8_t fast_slow_pwm = (Motor::PWM_MAX) / 5;
   //P制御の係数
   const float kp = 0.83;
   const float straight_road_kp = 0.83;
+  const float area5_road_kp = 0.63;
   const float fast_curve_kp = 0.83;
   const float second_curve_kp = 0.83;
   const float third_curve_kp = 0.83;
@@ -89,13 +87,15 @@ private:
   //D制御の係数
   const float kd = 2.0;
   const float straight_road_kd = 2.0;
-  const float fast_curve_kd = 2.0;
-  const float second_curve_kd = 2.0;
+  const float area5_road_kd = 1.6;
+  const float fast_curve_kd = 1.2;
+  const float second_curve_kd = 1.2;
   const float third_curve_kd = 2.0;
   const float green_kd = 2.0f;
   //I制御の係数
   const float ki = 0.5;//i制御の際の定数。
   const float straight_road_ki = 0.5;
+  const float area5_road_ki = 0.5;
   const float fast_curve_ki = 0.5;
   const float second_curve_ki = 0.5;
   const float third_curve_ki = 0.5;
@@ -124,6 +124,7 @@ private:
   bool last_caurce = false;
   int light_log[20];
   int light_log_was_made = 0;
+  bool run_fast = true;
 
 
   int blue_count = 0;
