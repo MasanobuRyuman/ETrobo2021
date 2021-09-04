@@ -56,20 +56,21 @@ private:
   int32_t cr0=0; //基準点カウント右
 
 
-  const int target = 19;
+  const int target = 22;
   //青い線を通る時の基準値
-  const int blue_target = 28;
-  const int green_target = 26;
-  const int last_target = 19;
+  const int blue_target = 30;
+  const int green_target = 29;
+  const int last_target = 22;
   int prev_diff = 0;
 
   
   //速度
   const int8_t pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t straight_road_pwm = (Motor::PWM_MAX) / 1.0;
+  const int8_t area5_road_pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 2;
   const int8_t second_curve_pwm = (Motor::PWM_MAX) / 2;
-  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 2;
+  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 4;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
   const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
@@ -87,7 +88,7 @@ private:
   //D制御の係数
   const float kd = 2.0;
   const float straight_road_kd = 2.0;
-  const float area5_road_kd = 1.6;
+  const float area5_road_kd = 2.0;
   const float fast_curve_kd = 1.2;
   const float second_curve_kd = 1.2;
   const float third_curve_kd = 2.0;

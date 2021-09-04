@@ -48,6 +48,7 @@ float Tracer::calc_porp_value(){
       return (second_curve_kp * diff + bias);
       break;
     case 5:
+      syslog(7,"area5のp制御");
       diff = colorSensor.getBrightness() - target;
       return (area5_road_kp * diff + bias);
       break;
@@ -681,11 +682,11 @@ void Tracer::run() {
   */
 
   //明るさ測定
-  /*
+  
   char b[256];
   sprintf(b,"%d",colorSensor.getBrightness());
   syslog(7,b);
-  */
+  
 
   //rgbの測定
   /*
@@ -746,7 +747,7 @@ void Tracer::run() {
   switch(area){
     case 1: 
       syslog(7,"area1");
-      if (clock.now() <= 500000){
+      if (clock.now() <= 600000){
         turn = calc_porp_value() + IntegralControl() + derivative_control();
         pwm_l = fast_slow_pwm - turn;
         pwm_r = fast_slow_pwm + turn;
@@ -788,8 +789,8 @@ void Tracer::run() {
     case 5:
       syslog(7,"エリア5");
       turn = calc_porp_value() + IntegralControl() + derivative_control();
-      pwm_l = straight_road_pwm - turn;
-      pwm_r = straight_road_pwm + turn;
+      pwm_l = area5_road_pwm - turn;
+      pwm_r = area5_road_pwm + turn;
       leftWheel.setPWM(pwm_l);
       rightWheel.setPWM(pwm_r);
     case 6:
