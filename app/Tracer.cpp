@@ -27,7 +27,8 @@ void Tracer::terminate() {
 
 //p制御
 float Tracer::calc_porp_value(){
-  //syslog(7,"p制御");
+  syslog(7,"p制御にきた");
+
   const int bias = 0;
   int diff;
   switch(area){
@@ -86,6 +87,7 @@ float Tracer::calc_porp_value(){
 
 //I制御の実装。
 float Tracer::IntegralControl(){
+  syslog(7,"I制御にきた");
   int LIGHT_LOG_SIZE = 20;//配列light_logの大きさを示す。
   int light_integra;//配列light_logの総和。これの平均値をi制御にて使用する。
   int diff;
@@ -103,6 +105,7 @@ float Tracer::IntegralControl(){
       diff = colorSensor.getBrightness() - target;
       break;
     case 5:
+    
       diff = colorSensor.getBrightness() - target;
       break;
     case 6:
@@ -144,6 +147,7 @@ float Tracer::IntegralControl(){
       return (second_curve_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 5:
+      syslog(7,"エリア５のI制御");
       return (area5_road_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 6:
@@ -168,6 +172,7 @@ float Tracer::IntegralControl(){
 //D制御
 float Tracer::derivative_control(){
   int diff;
+  syslog(7,"D制御にきた");
   switch(area){
     case 1:
       diff = colorSensor.getBrightness() - target;
@@ -179,23 +184,28 @@ float Tracer::derivative_control(){
       break;
     case 2:
       diff = colorSensor.getBrightness() - target;
+      return (fast_curve_kd * (diff - prev_diff));
+      break;
+    case 3:
+      diff = colorSensor.getBrightness() - target;
       derivative = straight_road_kd * (diff - prev_diff);
       if ((colorSensor.getBrightness() > 33 ) & (derivative > 20)){
         derivative = 20;
       }
       return (derivative);
       break;
-    case 3:
-      diff = colorSensor.getBrightness() - target;
-      return (straight_road_kd * (diff - prev_diff));
-      break;
     case 4:
       diff = colorSensor.getBrightness() - target;
       return (second_curve_kd * (diff - prev_diff));
       break;
     case 5:
+    syslog(7,"エリア5のD制御");
       diff = colorSensor.getBrightness() - target;
-      return (area5_road_kd * (diff - prev_diff));
+      derivative = straight_road_kd * (diff - prev_diff);
+      if ((colorSensor.getBrightness() > 33 ) & (derivative > 20)){
+        derivative = 20;
+      }
+      return (derivative);
       break;
     case 6:
       diff = colorSensor.getBrightness() - target;
@@ -516,6 +526,7 @@ void Tracer::get_coordinates(int32_t cl, int32_t cr)
 
 
 void Tracer::run() {
+  syslog(7,"runに入った");
   direction();
   color_sensor();
   msg_f("running...", 1);
@@ -547,7 +558,7 @@ void Tracer::run() {
     cl0 = left_counts;
     cr0 = right_counts;
   }
-  if (area==1 && x>=815){//821){//第2エリア
+  if (area==1 && x>=750){//821){//第2エリア
     area=2;
 
     syslog(7, "第2エリアに入りました");
@@ -606,7 +617,7 @@ void Tracer::run() {
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
-  if (area==4 && x<=800){//854){
+  if (area==4 && x<=750){//854){
     area=5;
     x0 = x;
     y0 = y;
@@ -688,6 +699,16 @@ void Tracer::run() {
   leftWheel.setPWM(pwm_l);
   rightWheel.setPWM(pwm_r);
   */
+  char p_dif[256];
+  sprintf(p_dif,"%lf",calc_porp_value());
+  syslog(7,"p制御");
+  syslog(7,p_dif);
+
+  char i_dif[256];
+  sprintf(i_dif,"%lf",IntegralControl());
+  syslog(7,"i制御");
+  syslog(7,i_dif);
+
   char r_dif[256];
   sprintf(r_dif,"%lf",derivative_control());
   syslog(7,"D制御");
