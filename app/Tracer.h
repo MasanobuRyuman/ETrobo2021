@@ -67,10 +67,10 @@ private:
   //速度
   const int8_t pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t straight_road_pwm = (Motor::PWM_MAX) / 1.0;
-  const int8_t area5_road_pwm = (Motor::PWM_MAX) / 1.2;
+  const int8_t area5_road_pwm = (Motor::PWM_MAX) / 1.5;
   const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 2;
   const int8_t second_curve_pwm = (Motor::PWM_MAX) / 2;
-  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 4;
+  const int8_t third_curve_pwm = (Motor::PWM_MAX) / 6;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
   const int8_t yellow_district_after_pwm = (Motor::PWM_MAX) / 6;
   const int8_t straight_pwm = (Motor::PWM_MAX) / 2;
@@ -80,23 +80,23 @@ private:
   //P制御の係数
   const float kp = 0.83;
   const float straight_road_kp = 0.83;
-  const float area5_road_kp = 0.63;
+  const float area5_road_kp = 0.83;
   const float fast_curve_kp = 0.83;
   const float second_curve_kp = 0.83;
   const float third_curve_kp = 0.83;
   const float green_kp = 1.0f;
   //D制御の係数
   const float kd = 2.0;
-  const float straight_road_kd = 2.0;
-  const float area5_road_kd = 2.0;
+  const float straight_road_kd = 2.2;
+  const float area5_road_kd = 2.2;
   const float fast_curve_kd = 1.2;
   const float second_curve_kd = 1.2;
   const float third_curve_kd = 2.0;
   const float green_kd = 2.0f;
   //I制御の係数
   const float ki = 0.5;//i制御の際の定数。
-  const float straight_road_ki = 0.5;
-  const float area5_road_ki = 0.5;
+  const float straight_road_ki = 0;
+  const float area5_road_ki = 0;
   const float fast_curve_ki = 0.5;
   const float second_curve_ki = 0.5;
   const float third_curve_ki = 0.5;
@@ -134,8 +134,8 @@ private:
   int eria = 1;
 
   float turn;
-  int pwm_l;
-  int pwm_r;
+  float pwm_l;
+  float pwm_r;
 
-
+  float derivative;
 };
