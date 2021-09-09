@@ -802,6 +802,13 @@ void Tracer::run() {
         pwm_r = fast_slow_pwm + turn;
         leftWheel.setPWM(pwm_l);
         rightWheel.setPWM(pwm_r);
+      }else if(clock.now() <= 1000000){
+        syslog(7,"初めの少し遅い");
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = few_slow_pwm - turn;
+        pwm_r = few_slow_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
       }else{
         //syslog(7,"ここから早くなる");
         turn = calc_porp_value() + IntegralControl() + derivative_control();
@@ -848,7 +855,7 @@ void Tracer::run() {
         pwm_r = few_slow_pwm + turn;
         leftWheel.setPWM(pwm_l);
         rightWheel.setPWM(pwm_r);
-      }else if (clock.now() <= 1200000){
+      }else if (clock.now() <= 1300000){
         syslog(7,"第五エリアスロー");
         turn = calc_porp_value() + IntegralControl() + derivative_control();
         pwm_l = area5_slow_pwm - turn;
@@ -877,7 +884,8 @@ void Tracer::run() {
         area7_fast = false;
         clock.reset();
       }
-      if (clock.now() <= 300000){
+      if (clock.now() <= 600000){
+        syslog(7,"エリア７スロー");
         turn = calc_porp_value() + IntegralControl() + derivative_control();
         pwm_l = few_slow_pwm - turn;
         pwm_r = few_slow_pwm + turn;
@@ -886,7 +894,7 @@ void Tracer::run() {
         if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
           area = 8;
         }
-      }else if (clock.now() <= 800000){
+      }else if (clock.now() <= 1100000){
         turn = calc_porp_value() + IntegralControl() + derivative_control();
         pwm_l = quite_few_slow_pwm - turn;
         pwm_r = quite_few_slow_pwm + turn;
