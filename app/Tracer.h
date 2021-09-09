@@ -71,8 +71,8 @@ private:
   const int8_t area3_road_pwm = (Motor::PWM_MAX) / 1.8;
   const int8_t area5_road_pwm = (Motor::PWM_MAX) / 1.0;
   const int8_t area5_slow_pwm = (Motor::PWM_MAX) / 1.7;
-  const int8_t area7_road_pwm = (Motor::PWM_MAX) / 1.4;
-  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 1.9;//1.7
+  const int8_t area7_road_pwm = (Motor::PWM_MAX) / 1.0;//1.4
+  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 2.0;//1.7
   const int8_t second_curve_pwm = (Motor::PWM_MAX) / 1.8;
   const int8_t third_curve_pwm = (Motor::PWM_MAX) / 2.4;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
@@ -100,7 +100,7 @@ private:
   const float area3_road_kd = 1.3;
   const float area5_road_kd = 2.0;
   const float area5_slow_kd = 0.8;
-  const float area7_road_kd = 1.0;
+  const float area7_road_kd = 2.0;//1.0
   const float fast_curve_kd = 1.6;
   const float second_curve_kd = 1.2;//1.525
   const float third_curve_kd = 1.1;//1.35
