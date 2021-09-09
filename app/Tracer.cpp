@@ -49,7 +49,7 @@ float Tracer::calc_porp_value(){
       break;
     case 5:
       //syslog(7,"area5のp制御");
-      diff = colorSensor.getBrightness() - target;
+      diff = colorSensor.getBrightness() - area5_target;
       return (area5_road_kp * diff + bias);
       break;
     case 6:
@@ -105,7 +105,7 @@ float Tracer::IntegralControl(){
       break;
     case 5:
     
-      diff = colorSensor.getBrightness() - target;
+      diff = colorSensor.getBrightness() - area5_target;
       break;
     case 6:
       diff = colorSensor.getBrightness() - target;
@@ -146,7 +146,7 @@ float Tracer::IntegralControl(){
       return (second_curve_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 5:
-      syslog(7,"エリア５のI制御");
+      //syslog(7,"エリア５のI制御");
       return (area5_road_ki * (light_integra / LIGHT_LOG_SIZE));
       break;
     case 6:
@@ -187,10 +187,12 @@ float Tracer::derivative_control(){
       break;
     case 3:
       diff = colorSensor.getBrightness() - target;
-      derivative = straight_road_kd * (diff - prev_diff);
+      derivative = area3_road_kd * (diff - prev_diff);
+      /*
       if ((colorSensor.getBrightness() > 30 ) & (derivative > 20)){
         derivative = 20;
       }
+      */
       return (derivative);
       break;
     case 4:
@@ -200,15 +202,17 @@ float Tracer::derivative_control(){
     case 5:
     syslog(7,"エリア5のD制御");
       if (area5_slow_time == true){
-        diff = colorSensor.getBrightness() - target;
+        diff = colorSensor.getBrightness() - area5_target;
         derivative = area5_slow_kd * (diff - prev_diff);
         return (derivative);
       }else{
         diff = colorSensor.getBrightness() - target;
         derivative = straight_road_kd * (diff - prev_diff);
+        
         if ((colorSensor.getBrightness() > 28 ) & (derivative > 20)){
           derivative = 20;
         }
+        
         return (derivative);
       }
       
@@ -564,7 +568,7 @@ void Tracer::run() {
     cl0 = left_counts;
     cr0 = right_counts;
   }
-  if (area==1 && x>=750){//821){//第2エリア
+  if (area==1 && x>=730){//821){//第2エリア
     area=2;
 
     syslog(7, "第2エリアに入りました");
@@ -573,7 +577,7 @@ void Tracer::run() {
     sprintf(s, "%lf %lf", x, y);
     syslog(7, s);
   }
-  if (area==2 && y>=187){//第3エリア
+  if (area==2 && y>=200){//第3エリア
     area=3;
     x0 = x;
     y0 = y;
@@ -614,7 +618,7 @@ void Tracer::run() {
     cl0 = left_counts;
     cr0 = right_counts;
    }
-  if (area==3 && y>=500){ //566 ){
+  if (area==3 && y>=480){ //566 ){
     area=4;
 
     syslog(7, "第4エリアに入りました");
@@ -666,7 +670,7 @@ void Tracer::run() {
     //sprintf(s, "%lf %lf", x_coordinates, y_coordinates);
     //syslog(7, s);
    //}
-  if (area==5 && x<=50){//200
+  if (area==5 && x<=110){//200
     area=6;
 
     syslog(7, "第6エリアに入りました");
@@ -676,7 +680,7 @@ void Tracer::run() {
     syslog(7, s);
 
   }
-  if (area == 6 && y >= 780){//818.09){ //第７エリア
+  if (area == 6 && y >= 775){//818.09){ //第７エリア
     area = 7;
 
     syslog(7, "第7エリアに入りました");
@@ -784,7 +788,7 @@ void Tracer::run() {
   if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
     area = 8;
   }
-  //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
+  
   if (run_fast == true){
     clock.reset();
     run_fast = false;
@@ -838,7 +842,13 @@ void Tracer::run() {
         clock.reset();
         area5_fast = false;
       }
-      if (clock.now() <= 1300000){
+      if (clock.now() <= 700000){
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = few_slow_pwm - turn;
+        pwm_r = few_slow_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+      }else if (clock.now() <= 1200000){
         syslog(7,"第五エリアスロー");
         turn = calc_porp_value() + IntegralControl() + derivative_control();
         pwm_l = area5_slow_pwm - turn;
@@ -863,18 +873,42 @@ void Tracer::run() {
       rightWheel.setPWM(pwm_r);
       break;
     case 7:
-      
-      turn = calc_porp_value() + IntegralControl() + derivative_control();
-      pwm_l = area7_road_pwm - turn;
-      pwm_r = area7_road_pwm + turn;
-      leftWheel.setPWM(pwm_l);
-      rightWheel.setPWM(pwm_r);
-      if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
-        area = 8;
+      if (area7_fast == true){
+        area7_fast = false;
+        clock.reset();
+      }
+      if (clock.now() <= 300000){
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = few_slow_pwm - turn;
+        pwm_r = few_slow_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+        if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
+          area = 8;
+        }
+      }else if (clock.now() <= 800000){
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = quite_few_slow_pwm - turn;
+        pwm_r = quite_few_slow_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+        if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
+          area = 8;
+        }
+      }else{
+        turn = calc_porp_value() + IntegralControl() + derivative_control();
+        pwm_l = area7_road_pwm - turn;
+        pwm_r = area7_road_pwm + turn;
+        leftWheel.setPWM(pwm_l);
+        rightWheel.setPWM(pwm_r);
+        if ((b_r_difference > 1.5) & (b_g_difference > 1.5)){
+          area = 8;
+        }
       }
       break;
     case 8:
       syslog(7,"8エリアに来ている");
+      //最後の直線（最後に先に色を判定されて動作が乱れるのを防ぐため一番最初にかく)
       if (red_flag == true){
         syslog(7,"最後の直しん");
         leftWheel.setPWM(straight_pwm);

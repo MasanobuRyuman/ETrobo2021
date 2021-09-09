@@ -57,6 +57,7 @@ private:
 
 
   const int target = 22;
+  const int area5_target = 22;
   //青い線を通る時の基準値
   const int blue_target = 28;
   const int green_target = 29;
@@ -67,11 +68,11 @@ private:
   //速度
   const int8_t pwm = (Motor::PWM_MAX) / 1.2;
   const int8_t straight_road_pwm = (Motor::PWM_MAX) / 1.0;
-  const int8_t area3_road_pwm = (Motor::PWM_MAX) / 1.3;
+  const int8_t area3_road_pwm = (Motor::PWM_MAX) / 1.8;
   const int8_t area5_road_pwm = (Motor::PWM_MAX) / 1.0;
   const int8_t area5_slow_pwm = (Motor::PWM_MAX) / 1.7;
-  const int8_t area7_road_pwm = (Motor::PWM_MAX) / 1.0;
-  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 1.7;
+  const int8_t area7_road_pwm = (Motor::PWM_MAX) / 1.4;
+  const int8_t fast_curve_pwm = (Motor::PWM_MAX) / 1.9;//1.7
   const int8_t second_curve_pwm = (Motor::PWM_MAX) / 1.8;
   const int8_t third_curve_pwm = (Motor::PWM_MAX) / 2.4;
   const int8_t green_pwm = (Motor::PWM_MAX) / 6;
@@ -80,6 +81,8 @@ private:
   const int8_t difficulty_cource_pwm = (Motor::PWM_MAX) / 3.0;
   const int8_t slow_pwm = (Motor::PWM_MAX) / 6;
   const int8_t fast_slow_pwm = (Motor::PWM_MAX) / 5;
+  const int8_t few_slow_pwm = (Motor::PWM_MAX) / 3;
+  const int8_t quite_few_slow_pwm = (Motor::PWM_MAX) / 1.8;
   //P制御の係数
   const float kp = 0.83;
   const float straight_road_kp = 0.83;
@@ -94,19 +97,22 @@ private:
   //D制御の係数
   const float kd = 2.0;
   const float straight_road_kd = 2.0;
-  const float area5_road_kd = 1.8;
-  const float area5_slow_kd = 1.3;
-  const float area7_road_kd = 1.8;
-  const float fast_curve_kd = 1.5;
-  const float second_curve_kd = 1.525;
-  const float third_curve_kd = 1.35;
+  const float area3_road_kd = 1.3;
+  const float area5_road_kd = 2.0;
+  const float area5_slow_kd = 0.8;
+  const float area7_road_kd = 1.0;
+  const float fast_curve_kd = 1.6;
+  const float second_curve_kd = 1.2;//1.525
+  const float third_curve_kd = 1.1;//1.35
   const float green_kd = 2.0f;
   const float difficult_kd = 2.0;
   //I制御の係数
   const float ki = 0.5;//i制御の際の定数。
   const float straight_road_ki = 0;
+  const float area3_road_ki = 0;
   const float area5_road_ki = 0;
-  const float area7_road_ki = 0;
+  const float area7_road_ki = 0.3;
+  const float area5_slow_ki = 0;
   const float fast_curve_ki = 0.1;
   const float second_curve_ki = 0.1;
   const float third_curve_ki = 0.1;
@@ -139,6 +145,7 @@ private:
   bool run_fast = true;
   bool area5_fast = true;
   bool area5_slow_time = true;
+  bool area7_fast = true;
 
   int blue_count = 0;
   bool blue_after_fast = false;
